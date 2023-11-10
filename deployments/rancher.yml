@@ -1,0 +1,8 @@
+# TODO Investigate how to install Rancher via Ansible
+#  https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/install-rancher-ha
+
+# helm install rancher ./rancher-2.7.9.tgz  /
+#   /  --namespace cattle-system   
+#   /  --set hostname=RANCHER.penguin.home  
+#   /  --set certmanager.version=1.11.0   
+#   /  --set useBundledSystemChart=true # Use the packaged Rancher system charts
