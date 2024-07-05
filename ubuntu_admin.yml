@@ -1,0 +1,54 @@
+---
+
+- name: Update ubuntu nodes
+  # hosts: longhorn
+  hosts: all
+  gather_facts: true
+  # vars:
+  #   ansible_python_interpreter: /usr/bin/python3
+  
+  tasks:
+    # - name: Update all packages
+    #   become: true
+    #   ansible.builtin.apt:
+    #     update-cache=yes
+    
+    - name: Upgrade all apt packages
+      become: true
+      ansible.builtin.apt:
+        update-cache=yes
+        state=latest
+
+- name: Upgrade OS version
+  hosts: all
+  become: true
+  gather_facts: true
+  
+  tasks:
+
+    - name: Perform a dist-upgrade.
+      tags: never
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Check if a reboot is required.
+      tags: never
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+        get_checksum: no
+      register: reboot_required_file
+
+    - name: Reboot the server (if required).
+      tags: never
+      ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists == true
+
+    - name: Remove useless packages from the cache
+      ansible.builtin.apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required.
+      ansible.builtin.apt:
+        autoremove: yes
