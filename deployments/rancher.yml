@@ -25,6 +25,12 @@
         namespace: cert-manager
         chart_ref: jetstack/cert-manager
         create_namespace: true
+        update_repo_cache: true
+        set_values: 
+          - value: "crds.enabled=true"
+            value_type: string
+        
+
 
     - name: Wait for cert-manager pods to be ready
       shell: kubectl wait --namespace cert-manager --for=condition=Ready pod --all --timeout={{ cert_manager_timeout }}
@@ -47,9 +53,11 @@
         repo_url: https://releases.rancher.com/server-charts/latest
     - name: Install Rancher
       kubernetes.core.helm:
-        name: rancherh
+        name: rancher
         namespace: cattle-system
         chart_ref: rancher-latest/rancher
+        create_namespace: true
+        update_repo_cache: true
         set_values: 
           - value: "hostname={{ rancher_hostname }}"
             value_type: string
