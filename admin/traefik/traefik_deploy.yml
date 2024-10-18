@@ -1,0 +1,28 @@
+---
+
+- name: Deploy Traefik on k3s using Ansible
+  hosts: localhost
+  vars:
+    cert_manager_version: "v1.15.1"  # Specify the cert-manager version here
+    cert_manager_timeout: "300s"  # Increase timeout to 10 minutes
+  tags:
+    certs  
+  tasks:
+    - name: Add traefik repository
+      kubernetes.core.helm_repository:
+        name: traefik
+        repo_url: https://helm.traefik.io/traefik
+
+    # - name: Update helm repositories
+    #   shell: helm repo update
+
+    - name: Install traefik
+      kubernetes.core.helm:
+        name: traefik
+        namespace: traefik
+        chart_ref: traefik/traefik
+        create_namespace: true
+        update_repo_cache: true
+        set_values: 
+          - value: "values=values.yaml"
+            value_type: string

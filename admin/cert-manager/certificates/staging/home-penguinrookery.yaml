@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: home-penguinrookery-co-uk
+  namespace: default
+spec:
+  secretName: home-penguinrookery-co-uk-staging-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*home.penguinrookery.co.uk"
+  dnsNames:
+  - "home.penguinrookery.co.uk"
+  - "*home.penguinrookery.co.uk"
