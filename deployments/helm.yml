@@ -1,13 +1,29 @@
-# TODO Investigate how to install Helm via Ansible
+---
 
-# ---
+- name: Install Helm
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install curl (if not already installed)
+      package:
+        name: curl
+        state: present
 
-# - name: Download k3s binary x64
-#   get_url:
-#     url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/k3s
-#     checksum: sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-amd64.txt
-#     dest: /usr/local/bin/k3s
-#     owner: root
-#     group: root
-#     mode: 0755
-#   when: ansible_facts.architecture == "x86_64"
+    - name: Download Helm installation script
+      get_url:
+        url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        dest: /tmp/get_helm.sh
+        mode: '0755'
+
+    - name: Run Helm installation script
+      command: /tmp/get_helm.sh
+      args:
+        creates: /usr/local/bin/helm
+      register: helm_install_result
+      changed_when: false
+
+    - name: Add /usr/local/bin to PATH
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH=$PATH:/usr/local/bin'
+      when: helm_install_result.rc == 0

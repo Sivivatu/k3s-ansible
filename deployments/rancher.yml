@@ -29,8 +29,6 @@
         set_values: 
           - value: "crds.enabled=true"
             value_type: string
-        
-
 
     - name: Wait for cert-manager pods to be ready
       shell: kubectl wait --namespace cert-manager --for=condition=Ready pod --all --timeout={{ cert_manager_timeout }}
@@ -43,7 +41,7 @@
     # ansible_connection: kubernetes.core.kubectl
     # ansible_kubectl_namespace: cattle-system
     # ansible_kubectl_extra_args: 
-    rancher_hostname: "rancher.home.penguinrookery.co.uk"
+    rancher_hostname: "rancher.kube.penguinrookery.co.uk"
   tags:
     rancher
   tasks:

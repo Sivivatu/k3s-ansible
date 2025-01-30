@@ -1,12 +1,12 @@
 ---
-- name: Prepare Proxmox cluster
-  hosts: proxmox
-  gather_facts: true
-  become: true
-  environment: "{{ proxy_env | default({}) }}"
-  roles:
-    - role: proxmox_lxc
-      when: proxmox_lxc_configure
+# - name: Prepare Proxmox cluster
+#   hosts: proxmox
+#   gather_facts: true
+#   become: true
+#   environment: "{{ proxy_env | default({}) }}"
+#   roles:
+#     - role: proxmox_lxc
+#       when: proxmox_lxc_configure
 
 - name: Prepare k3s nodes
   hosts: k3s_cluster
@@ -39,6 +39,13 @@
   roles:
     - role: k3s_agent
       become: true
+  
+- name: Setup k3s longhorn
+  hosts: longhorn
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: k3s_agent
+      become: true
 
 - name: Configure k3s cluster
   hosts: master
@@ -46,3 +53,17 @@
   roles:
     - role: k3s_server_post
       become: true
+
+- name: Copy Kube config locally
+  hosts: primary
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: config_sync
+      become : true
+
+# - name: Setup longhorn servers
+#   hosts: longhorn
+#   environment: "{{ proxy_env | default({}) }}"
+#   roles:
+#     - role: longhorn
+#       become: true      

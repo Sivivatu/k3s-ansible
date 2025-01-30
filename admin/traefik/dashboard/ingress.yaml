@@ -19,4 +19,4 @@ spec:
         - name: api@internal
           kind: TraefikService
   tls:
-    secretName: kube-penguinrookery-co-uk-staging-tls
+    secretName: kube-penguinrookery-co-uk-prod-tls
